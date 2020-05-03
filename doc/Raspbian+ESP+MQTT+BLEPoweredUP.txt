@@ -1,0 +1,196 @@
+
+Appunti installazione.
+Non rivisto / non verificato
+
+Raspbian stretch download
+
+
+https://www.raspberrypi.org/downloads/raspbian/
+
+Balena etcher download
+https://www.balena.io/etcher/
+
+Use Etcher to format the sd-card with the raspbian lite image.
+Boot.
+Enable SSH.
+
+sudo raspi-config  
+--> access --> SSH --> enable
+
+Update.
+
+sudo apt-get update
+sudo apt-get dist-upgrade
+sudo apt clean
+sudo reboot
+
+sudo apt-get install ethtool   (useful to debug eth0 connectivity)
+
+Raspberry Access point instructions.
+
+sudo apt-get install dnsmasq hostapd
+
+sudo vi /etc/dhcpcd.conf 
+
+#last line
+denyinterfaces wlan0
+
+sudo vi /etc/network/interfaces
+
+auto lo
+iface lo inet loopback
+auto eth0
+iface eth0 inet dhcp
+allow-hotplug wlan0
+iface wlan0 inet static
+    address 192.168.5.1
+    netmask 255.255.255.0
+    network 192.168.5.0
+    broadcast 192.168.5.255
+
+sudo vi /etc/hostapd/hostapd.conf
+
+interface=wlan0
+driver=nl80211
+ssid=ITS
+hw_mode=g
+channel=6
+ieee80211n=1
+wmm_enabled=1
+ht_capab=[HT40][SHORT-GI-20][DSSS_CCK-40]
+macaddr_acl=0
+auth_algs=1
+ignore_broadcast_ssid=0
+wpa=2
+wpa_key_mgmt=WPA-PSK
+wpa_passphrase=********
+rsn_pairwise=CCMP
+
+sudo vi /etc/default/hostapd 
+
+DAEMON_CONF="/etc/hostapd/hostapd.conf"
+
+
+sudo mv /etc/dnsmasq.conf /etc/dnsmasq.conf.bak
+sudo vi /etc/dnsmasq.conf
+
+interface=wlan0 
+listen-address=192.168.5.1
+bind-interfaces 
+server=8.8.8.8
+domain-needed
+bogus-priv
+dhcp-range=192.168.5.100,192.168.5.200,24h
+
+sudo reboot
+
+
+MQTT Broker mosquitto + Nodered.
+
+sudo apt-get install mosquitto mosquitto-clients nodejs nodered npm
+sudo systemctl enable nodered.service
+sudo node-red &
+// non verificato:
+// sudo npm i -g npm@2.x
+// sudo npm install node-red-dashboard
+
+#Node red
+
+http://192.168.1.100:1880
+
+MQTT clients:
+
+MQTTLens Chrome app
+https://chrome.google.com/webstore/detail/mqttlens/hemojaaeigabkbcookmlgmdigohjobjm?hl=en
+
+IoT MQTT Panel
+https://play.google.com/store/apps/details?id=snr.lab.iotmqttpanel.prod
+
+
+Connect to Powered-up/Boost etc using node-poweredup
+Install Bluetooth support
+
+sudo apt-get install bluetooth bluez libbluetooth-dev libudev-dev
+
+Test:
+
+
+sudo bluetoothctl 
+[bluetooth]# show
+Controller B8:27:EB:7C:6E:F0
+	Name: raspberrypi
+	Alias: raspberrypi
+	Class: 0x000000
+	Powered: yes
+	Discoverable: no
+	Pairable: yes
+	UUID: Generic Attribute Profile (00001801-0000-1000-8000-00805f9b34fb)
+	UUID: A/V Remote Control        (0000110e-0000-1000-8000-00805f9b34fb)
+	UUID: PnP Information           (00001200-0000-1000-8000-00805f9b34fb)
+	UUID: Generic Access Profile    (00001800-0000-1000-8000-00805f9b34fb)
+	UUID: A/V Remote Control Target (0000110c-0000-1000-8000-00805f9b34fb)
+	Modalias: usb:v1D6Bp0246d052B
+	Discovering: no
+[bluetooth]# scan on
+Discovery started
+[CHG] Controller B8:27:EB:7C:6E:F0 Discovering: yes
+[NEW] Device 90:84:2B:05:F7:C2 Smart Hub		<===
+[NEW] Device 67:11:13:D9:F4:A2 67-11-13-D9-F4-A2
+[NEW] Device CC:17:95:E3:37:8F MI Band 2
+
+
+
+Install node bluetooth & poweredup
+
+sudo apt-get install git
+npm install noble
+
+Running noble without root/sudo
+sudo setcap cap_net_raw+eip $(eval readlink -f `which node`)
+
+npm install node-poweredup --save
+
+
+Run an app in Node as a systemd service with systemctl
+
+Check start in package.json
+
+  "scripts": {
+    "start": "node legohub.js"
+  },
+
+
+File .service
+
+# systemd service for legohub.js
+[Unit]
+Description=ATS LegoPU API
+After=network.target
+
+[Service]
+WorkingDirectory=/home/pi/ATS/itlug-lego-pu
+ExecStart=/usr/bin/npm start
+Restart=on-failure
+User=pi
+Environment=PORT=3000
+
+[Install]
+WantedBy=multi-user.target
+
+
+
+
+ln -s package.json.service package.json
+sudo ln -s legohub.service /etc/systemd/system/legohub.service
+sudo systemctl enable legohub.service
+sudo systemctl start legohub.service
+
+
+
+
+
+
+
+
+https://github.com/nathankellenicki/node-poweredup/
+
