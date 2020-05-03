@@ -10,6 +10,8 @@
 //Ho notato che se non vengono impostati correttamente i parametri per il WiFi e di conseguenza il nodo 
 //non si collega,i campi custom non vengono salvati
 
+//test GitHub
+
 //20190215
 //Modificato host name del dispositivo, ora è identico al device MQTT
 //20190211
