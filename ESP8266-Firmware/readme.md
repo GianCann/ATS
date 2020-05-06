@@ -18,3 +18,24 @@ Aggiunta la gestione mediante FS per i parametri:
 //1) Ora il nodo all avvio manda le info su se stesso mediante una stringa json
 //2) Aggiunto topic per chiedere info del nodo,come quelle inviate all'accensione
 //3) Introdotto lampeggio ogni .2 sec durante l'attesa della connessione al server MQTT
+
+*I COMANDI MQTT*
+
+I comandi MQTT
+
+ATS/(identificativo dispositivo)/MotorForward *[Speed]* (da 0 a 100)
+
+ATS/(identificativo dispositivo)/MotorBackward *[Speed]* (da 0 a 100)
+
+ATS/(identificativo dispositivo)/MotorStop
+
+ATS/(identificativo dispositivo)/Reset
+
+ATS/(identificativo dispositivo)/SoftReset
+
+ATS/(identificativo dispositivo)/Info
+
+- MotorForward/MotorBackward/MotorStop: controllano la porta 0 del controller (la porta 1 deve essere ancora implementata)
+- Reset: reimpostano i setting del WiFi
+- SoftReset: riavvia il dispositivo
+- Info: restituisce via MQTT alcuni parametri del dispositivo:  DevId, Type, Speed, Dir, Ip
