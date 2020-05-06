@@ -8,6 +8,3 @@ ATS - AFOL Train System for LEGO Trains
 - 3D_Print: sorgenti e file stampabili (stl) per contenitori e box vari
 
 - doc: documentazione varia utile
-
-- giovanni
-
