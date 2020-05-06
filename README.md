@@ -11,9 +11,9 @@ Firmware per nodo MQTT basato su ESP8266 che comanda ricevitori power function
 Sorgenti e file stampabili (stl) per contenitori e box vari.
 
 ### ATS Box
-v1 - vecchia revisione 
-v2 - nuova release con supporto scheda e plate alla base
-v2b - come v2 ma con pareti scatola spesse 1mm invece di 1.5mm
+* v1 - vecchia revisione 
+* v2 - nuova release con supporto scheda e plate alla base
+* v2b - come v2 ma con pareti scatola spesse 1mm invece di 1.5mm
 
 ## doc
 Documentazione varia utile
